@@ -1,0 +1,11 @@
+class CoreErrorCode:
+    INVALID = "invalid"
+    NOT_FOUND = "not_found"
+    NOT_SUPPORT = "not_support"
+    PROCESSING_ERROR = "processing_error"
+    REQUIRED = "required"
+    TIMEOUT = "timeout"
+    TOO_SHORT = "too_short"
+    UNIQUE = "unique"
+    VERIFY_FAIL = "verify_fail"
+    PERMISSION_DENIED = "permission_denied"

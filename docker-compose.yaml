@@ -4,10 +4,11 @@ services:
   # web
   bb_web:
     build: ./bb_web
-    command: bash -c "/code/wait-for.sh db_web:3306 --timeout=60 & python3 ./bb_web/manage.py runserver 0.0.0.0:8001"
+    command: bash -c "/code/wait-for.sh db_web:3307 --timeout=60 & python3 ./bb_web/manage.py runserver 0.0.0.0:8001"
     # command: bash -c "python3 ./bb_web/manage.py makemigrations && python3 ./bb_web/manage.py migrate && python3 ./bb_web/manage.py runserver 0.0.0.0:8001"
     volumes:
       - ./bb_web:/code/bb_web
+      # - ./bb_web/src/:/code/bb_web/src
       - /tmp/slack_bot/mysqld:/run/mysqld
     ports:
       - 8001:8001
@@ -18,7 +19,7 @@ services:
       - db_web
 
   db_web:
-    image: mysql:5.5
+    image: mysql:8.0
     container_name: db_web
     ports:
       - "3311:3307"
@@ -30,7 +31,7 @@ services:
     #   - /opt/slack_bot/mysql_data:/var/lib/mysql
     #   - /tmp/slack_bot/mysqld:/var/run/mysqld
     volumes:
-      - ./mysql5/data:/var/lib/mysql/
+      - ./mysql1/data:/var/lib/mysql/
       # - ./my.cnf:/root/.my.cnf:ro
       # - ./db_web/conf.d:/etc/mysql/conf.d:ro
       # - ./db_web/logs:/var/log/mysql:rw
@@ -63,7 +64,7 @@ services:
 
   db_app:
     # image: mysql:5.5
-    image: mysql:5.6
+    image: mysql:8.0
     container_name: db_app
     ports:
       - "3312:3306"
@@ -75,7 +76,7 @@ services:
     #   - /opt/slack_bot/mysql_data:/var/lib/mysql
     #   - /tmp/slack_bot/mysqld:/var/run/mysqld
     volumes:
-      - ./mysql6/data:/var/lib/mysql/
+      - ./mysql2/data:/var/lib/mysql/
       # - ./my.cnf:/root/.my.cnf:ro
       # - ./db_app/conf.d:/etc/mysql/conf.d:ro
       # - ./db_app/logs:/var/log/mysql:rw

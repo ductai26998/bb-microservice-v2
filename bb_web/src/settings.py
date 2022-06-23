@@ -49,9 +49,9 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework_simplejwt",
     "cloudinary",
-    # "src.account",
-    # "src.gallery",
-    # "src.service",
+    "src.account",
+    "src.gallery",
+    "src.service",
 ]
 
 MIDDLEWARE = [
@@ -119,7 +119,7 @@ DATABASES = {
     }
 }
 
-# AUTH_USER_MODEL = "account.BaseUser"
+AUTH_USER_MODEL = "account.BaseUser"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
