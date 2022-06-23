@@ -102,13 +102,13 @@ class BaseUser(AbstractUser, TimeStampedModel, ModelWithMetadata):
         self.save(update_fields=("private_metadata",))
 
 
-class User(BaseUser):
-    gender = models.CharField(
-        max_length=6, choices=Gender.choices, blank=True, null=True
-    )
+# class User(BaseUser):
+#     gender = models.CharField(
+#         max_length=6, choices=Gender.choices, blank=True, null=True
+#     )
 
-    class Meta:
-        ordering = ("date_joined",)
+#     class Meta:
+#         ordering = ("date_joined",)
 
 
 class Salon(BaseUser):

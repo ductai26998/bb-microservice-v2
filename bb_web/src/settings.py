@@ -90,7 +90,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
-    "DEFAULT_RENDERER_CLASSES": ("base.renderers.ApiRenderer",),
+    "DEFAULT_RENDERER_CLASSES": ("src.core.renderers.ApiRenderer",),
 }
 
 SIMPLE_JWT = {
