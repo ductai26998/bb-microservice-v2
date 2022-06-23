@@ -49,8 +49,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework_simplejwt",
     "cloudinary",
-    # "src.account",
-    # "src.booking",
+    "src.account",
+    "src.booking",
 ]
 
 MIDDLEWARE = [
@@ -94,7 +94,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
-    "DEFAULT_RENDERER_CLASSES": ("base.renderers.ApiRenderer",),
+    "DEFAULT_RENDERER_CLASSES": ("src.core.renderers.ApiRenderer",),
 }
 
 SIMPLE_JWT = {
@@ -114,17 +114,28 @@ DATABASES = {
     #     "ENGINE": "django.db.backends.sqlite3",
     #     "NAME": BASE_DIR / "db.sqlite3",
     # }
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("MYSQL_NAME", "db_app"),
-        "USER": os.getenv("MYSQL_USER", "ductai26998"),
-        "PASSWORD": os.getenv("MYSQL_PASSWORD", "ductai26998"),
+    # "default": {
+    #     "ENGINE": "django.db.backends.mysql",
+    #     "NAME": os.getenv("MYSQL_NAME", "db_app"),
+    #     "USER": os.getenv("MYSQL_USER", "ductai26998"),
+    #     "PASSWORD": os.getenv("MYSQL_PASSWORD", "ductai26998"),
+    #     "HOST": "db_app",
+    #     "PORT": "3306",
+    # }
+    'default': {
+        'NAME': os.getenv("MYSQL_NAME", "db_app"),
+        'ENGINE': 'mysql.connector.django',
+        'USER': os.getenv("MYSQL_USER", "ductai26998"),
+        'PASSWORD': os.getenv("MYSQL_PASSWORD", "ductai26998"),
         "HOST": "db_app",
         "PORT": "3306",
+        'OPTIONS': {
+          'autocommit': True,
+        },
     }
 }
 
-# AUTH_USER_MODEL = "account.BaseUser"
+AUTH_USER_MODEL = "account.BaseUser"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
