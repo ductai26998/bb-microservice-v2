@@ -49,8 +49,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework_simplejwt",
     "cloudinary",
-    # "account",
-    # "booking",
+    # "src.account",
+    # "src.booking",
 ]
 
 MIDDLEWARE = [
@@ -116,11 +116,11 @@ DATABASES = {
     # }
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("DB_NAME","db_app"),
-        "USER": os.getenv("DB_USER","root"),
-        "PASSWORD": os.getenv("DB_PASSWORD",""),
-        "HOST": os.getenv("DB_HOST","localhost"),
-        "PORT": os.getenv("DB_PORT","3312"),
+        "NAME": os.getenv("MYSQL_NAME", "db_app"),
+        "USER": os.getenv("MYSQL_USER", "ductai26998"),
+        "PASSWORD": os.getenv("MYSQL_PASSWORD", "ductai26998"),
+        "HOST": "db_app",
+        "PORT": "3306",
     }
 }
 

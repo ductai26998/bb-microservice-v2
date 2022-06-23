@@ -4,10 +4,11 @@ services:
   # web
   bb_web:
     build: ./bb_web
-    command: bash -c "python3 ./bb_web/manage.py runserver 0.0.0.0:8001"
+    command: bash -c "/code/wait-for.sh db_web:3306 --timeout=60 & python3 ./bb_web/manage.py runserver 0.0.0.0:8001"
     # command: bash -c "python3 ./bb_web/manage.py makemigrations && python3 ./bb_web/manage.py migrate && python3 ./bb_web/manage.py runserver 0.0.0.0:8001"
     volumes:
       - ./bb_web:/code/bb_web
+      - /tmp/slack_bot/mysqld:/run/mysqld
     ports:
       - 8001:8001
     restart: always
@@ -20,24 +21,38 @@ services:
     image: mysql:5.5
     container_name: db_web
     ports:
-      - "3311:3311"
+      - "3311:3307"
+    expose:
+      - "3307"
+    # volumes:
+    #   - .:/var/lib/mysql
+    # volumes:
+    #   - /opt/slack_bot/mysql_data:/var/lib/mysql
+    #   - /tmp/slack_bot/mysqld:/var/run/mysqld
     volumes:
-      - .:/var/lib/mysql
+      - ./mysql5/data:/var/lib/mysql/
+      # - ./my.cnf:/root/.my.cnf:ro
+      # - ./db_web/conf.d:/etc/mysql/conf.d:ro
+      # - ./db_web/logs:/var/log/mysql:rw
+      # - ./db_web/initdb.d:/docker-entrypoint-initdb.d:ro
+      # # - ./common:${MOUNTED_SHARED_DIRECTORY}:ro
+      # - ./auto-generate:/auto-generate:rw
     environment:
-      DB_ROOT_PASSWORD: 123qwe!@#
-      DB_DATABASE: db_web
-      DB_USER: root
-      DB_PASSWORD:
-      DB_HOST: localhost
-      DB_PORT: 3311
+      - MYSQL_ROOT_PASSWORD=123qwe!@#
+      - MYSQL_DATABASE=db_web
+      - MYSQL_USER=ductai26998
+      - MYSQL_PASSWORD=ductai26998
+      - MYSQL_HOST=localhost
+      - MYSQL_TCP_PORT=3307
 
   # app
   bb_app:
     build: ./bb_app
-    command: bash -c "python3 ./bb_app/manage.py runserver 0.0.0.0:8002"
+    command: bash -c "/code/wait-for.sh db_app:3306 --timeout=60 & python3 ./bb_app/manage.py runserver 0.0.0.0:8002"
     # command: bash -c "python3 ./bb_app/manage.py makemigrations && python3 ./bb_app/manage.py migrate && python3 ./bb_app/manage.py runserver 0.0.0.0:8002"
     volumes:
       - ./bb_app:/code/bb_app
+      - /tmp/slack_bot/mysqld:/run/mysqld
     ports:
       - 8002:8002
     restart: always
@@ -47,16 +62,30 @@ services:
       - db_app
 
   db_app:
-    image: mysql:5.5
+    # image: mysql:5.5
+    image: mysql:5.6
     container_name: db_app
     ports:
-      - "3312:3312"
+      - "3312:3306"
+    # expose:
+    #   - "3307"
+    # volumes:
+    #   - .:/var/lib/mysql
+    # volumes:
+    #   - /opt/slack_bot/mysql_data:/var/lib/mysql
+    #   - /tmp/slack_bot/mysqld:/var/run/mysqld
     volumes:
-      - .:/var/lib/mysql
+      - ./mysql6/data:/var/lib/mysql/
+      # - ./my.cnf:/root/.my.cnf:ro
+      # - ./db_app/conf.d:/etc/mysql/conf.d:ro
+      # - ./db_app/logs:/var/log/mysql:rw
+      # - ./db_app/initdb.d:/docker-entrypoint-initdb.d:ro
+      # # - ./common:${MOUNTED_SHARED_DIRECTORY}:ro
+      # - ./auto-generate:/auto-generate:rw
     environment:
-      DB_ROOT_PASSWORD: 123qwe!@#
-      DB_NAME: db_app
-      DB_USER: root
-      DB_PASSWORD:
-      DB_HOST: localhost
-      DB_PORT: 3312
+      - MYSQL_ROOT_PASSWORD=123qwe!@#
+      - MYSQL_DATABASE=db_app
+      - MYSQL_USER=ductai26998
+      - MYSQL_PASSWORD=ductai26998
+      - MYSQL_HOST=localhost
+      # - MYSQL_TCP_PORT=3307
