@@ -1,0 +1,62 @@
+version: '2'
+
+services:
+  # web
+  bb_web:
+    build: ./bb_web
+    command: bash -c "python3 ./bb_web/manage.py runserver 0.0.0.0:8001"
+    # command: bash -c "python3 ./bb_web/manage.py makemigrations && python3 ./bb_web/manage.py migrate && python3 ./bb_web/manage.py runserver 0.0.0.0:8001"
+    volumes:
+      - ./bb_web:/code/bb_web
+    ports:
+      - 8001:8001
+    restart: always
+    depends_on:
+      - db_web
+    links:
+      - db_web
+
+  db_web:
+    image: mysql:5.5
+    container_name: db_web
+    ports:
+      - "3311:3311"
+    volumes:
+      - .:/var/lib/mysql
+    environment:
+      DB_ROOT_PASSWORD: 123qwe!@#
+      DB_DATABASE: db_web
+      DB_USER: root
+      DB_PASSWORD:
+      DB_HOST: localhost
+      DB_PORT: 3311
+
+  # app
+  bb_app:
+    build: ./bb_app
+    command: bash -c "python3 ./bb_app/manage.py runserver 0.0.0.0:8002"
+    # command: bash -c "python3 ./bb_app/manage.py makemigrations && python3 ./bb_app/manage.py migrate && python3 ./bb_app/manage.py runserver 0.0.0.0:8002"
+    volumes:
+      - ./bb_app:/code/bb_app
+    ports:
+      - 8002:8002
+    restart: always
+    depends_on:
+      - db_app
+    links:
+      - db_app
+
+  db_app:
+    image: mysql:5.5
+    container_name: db_app
+    ports:
+      - "3312:3312"
+    volumes:
+      - .:/var/lib/mysql
+    environment:
+      DB_ROOT_PASSWORD: 123qwe!@#
+      DB_NAME: db_app
+      DB_USER: root
+      DB_PASSWORD:
+      DB_HOST: localhost
+      DB_PORT: 3312
