@@ -1,21 +1,15 @@
-# # from ..serializers.salon import SalonReviewSerializer
-# # from booking.serializers import BookingSerializer
-# from django.conf import settings
-# from django.db import transaction
-# from django.db.models import Q
-# from rest_framework import status
-# from rest_framework.decorators import action
-# from rest_framework.permissions import IsAdminUser, IsAuthenticated
-# from rest_framework.renderers import JSONRenderer
-# from rest_framework.response import Response
-# from rest_framework.views import APIView
-# from rest_framework_simplejwt.tokens import RefreshToken
+from django.conf import settings
+from rest_framework import status
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
-# from ...core.services.cloudinary import CloudinaryService
-# from ...core.views import BaseViewSet
-# from ...gallery import models as gallery_models
-# from ...gallery.serializers import GalleryPhotoSerializer, GallerySerializer
-# from ...service.serializers import ServiceSalonSerializer
+from ...core.services.cloudinary import CloudinaryService
+from ...core.views import BaseViewSet
+from ...gallery import models as gallery_models
+from ...gallery.serializers import GalleryPhotoSerializer, GallerySerializer
+from ...service.serializers import ServiceSalonSerializer
 # from ..serializers import (
 #     AddressSerializer,
 #     AddressSerializerInput,
@@ -23,8 +17,9 @@
 #     SalonRegisterSerializer,
 #     SalonSerializer,
 # )
-# from . import AccountErrorCode, models
-# from .address import Address
+from . import AccountErrorCode, models
+from .address import Address
+import requests
 
 
 # class SalonViewSet(BaseViewSet):
@@ -244,105 +239,29 @@
 #     #         status=status.HTTP_200_OK,
 #     #     )
 
+class UsersView(ListAPIView):
+    def get(self, request, *args, **kwargs):
+        id=self.kwargs.get('pk')
+        response = requests.get(settings.APP_URL + "/users/")
+        if response.ok:
+            return Response(
+                response.json(),
+                status=status.HTTP_200_OK,
+            )
+        return Response(
+            response.json(),
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
-# class SalonRegister(APIView):
-#     @transaction.atomic
-#     def post(self, request):
-#         try:
-#             data = request.data
-#             serializer_salon = SalonRegisterInputSerializer(data=data)
-#             if serializer_salon.is_valid():
-#                 serializer_salon.validated_data
-#                 serializer_salon.save()
-#                 email = serializer_salon.data["email"]
-#                 salon = models.Salon.objects.get(email=email)
-#                 salon.is_salon = True
-#                 salon.save(update_fields=("is_salon",))
-
-#                 if data.get("address") and data.get("address").get("position_url"):
-#                     address_ref = Address()
-#                     lat, lng = address_ref.get_position_from_url(
-#                         data.get("address").get("position_url")
-#                     )
-#                     address = salon.address
-#                     address.lat = lat
-#                     address.lng = lng
-
-#                 token = RefreshToken.for_user(salon)
-#                 response = SalonRegisterSerializer(salon)
-
-#                 return Response(
-#                     {
-#                         "detail": "Registration successfully, check email to get otp",
-#                         "data": {
-#                             **response.data,
-#                             "access_token": str(token.access_token),
-#                         },
-#                     },
-#                     status=status.HTTP_200_OK,
-#                 )
-#             return Response(
-#                 {
-#                     "code": AccountErrorCode.PROCESSING_ERROR,
-#                     "detail": "Register salon failed",
-#                     "messages": serializer_salon.errors,
-#                 },
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
-#         except Exception as e:
-#             return Response(
-#                 {
-#                     "code": AccountErrorCode.PROCESSING_ERROR,
-#                     "detail": "Register salon failed",
-#                     "messages": e.args,
-#                 },
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
-
-
-# class AddressUpdate(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     @transaction.atomic
-#     def put(self, request):
-#         try:
-#             address = request.user.address
-#             serializer = AddressSerializerInput(data=request.data)
-#             if serializer.is_valid():
-#                 data = serializer.data
-#                 for key in data:
-#                     value = data[key]
-#                     if value and value.strip() != "":
-#                         setattr(address, key, value)
-
-#                 address_ref = Address()
-#                 position_url = data.get("position_url")
-#                 lat, lng = address_ref.get_position_from_url(position_url)
-#                 address.lat = lat
-#                 address.lng = lng
-#                 address.save()
-#                 response = AddressSerializer(address)
-#                 return Response(
-#                     {
-#                         "detail": "Update address successfully",
-#                         "data": response.data,
-#                     },
-#                     status=status.HTTP_200_OK,
-#                 )
-#             return Response(
-#                 {
-#                     "code": AccountErrorCode.PROCESSING_ERROR,
-#                     "detail": "Register salon failed",
-#                     "messages": serializer.errors,
-#                 },
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
-#         except Exception as e:
-#             return Response(
-#                 {
-#                     "code": AccountErrorCode.PROCESSING_ERROR,
-#                     "detail": "Update address failed",
-#                     "messages": e.args,
-#                 },
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
+class UserDetailView(RetrieveAPIView):
+    def get(self, request, pk, *args, **kwargs):
+        response = requests.get(settings.APP_URL + "/users/%s/" % pk)
+        if response.ok:
+            return Response(
+                response.json(),
+                status=status.HTTP_200_OK,
+            )
+        return Response(
+            response.json(),
+            status=status.HTTP_400_BAD_REQUEST,
+        )

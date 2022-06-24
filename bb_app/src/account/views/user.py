@@ -20,7 +20,7 @@ from . import AccountErrorCode, models
 
 
 class UserViewSet(BaseViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     serializer_map = {
         "list": UserSerializer,
@@ -28,8 +28,8 @@ class UserViewSet(BaseViewSet):
         "partial_update": UserUpdateSerializer,
     }
     permission_map = {
-        "list": [IsAdminUser],
-        "retrieve": [IsAuthenticated],
+        # "list": [IsAdminUser],
+        # "retrieve": [IsAuthenticated],
         "destroy": [IsAdminUser],
     }
 

@@ -5,6 +5,7 @@ from rest_framework.routers import DefaultRouter
 from .views import AccountStoreFCMToken
 # from .views import salon as salon_views
 from .views import user as user_views
+from .views import salon as salon_views
 
 router = DefaultRouter()
 
@@ -21,4 +22,6 @@ urlpatterns = [
     path("userBookings/", user_views.UserViewSet.as_view({"get": "bookings"})),
     # path("fcmToken/", AccountStoreFCMToken.as_view())
     # apis for user
+    url(r"salons/$", salon_views.SalonsView.as_view(), name="users"),
+    path("salons/<pk>/", salon_views.SalonDetailView.as_view(), name="user-details"),
 ]
